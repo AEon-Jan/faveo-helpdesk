@@ -66,6 +66,7 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
+        "adldap2/adldap2": "^10.6",
         "league/flysystem-aws-s3-v3": "^3.0",
         "davibennun/laravel-push-notification": "dev-master",
         "chumper/datatable": "dev-master",

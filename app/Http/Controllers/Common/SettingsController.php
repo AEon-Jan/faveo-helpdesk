@@ -346,10 +346,18 @@ class SettingsController extends Controller
                             return ucfirst($model['description']);
                         })
                         ->addColumn('author', function ($model) {
-                            return ucfirst($model['author']);
+                            if (!empty($model['author'])) {
+                                return ucfirst($model['author']);
+                            }
+
+                            return '-';
                         })
                         ->addColumn('website', function ($model) {
-                            return '<a href='.$model['website'].' target=_blank>'.$model['website'].'</a>';
+                            if (!empty($model['website'])) {
+                                return '<a href='.$model['website'].' target=_blank>'.$model['website'].'</a>';
+                            }
+
+                            return '-';
                         })
                         ->addColumn('version', function ($model) {
                             return $model['version'];

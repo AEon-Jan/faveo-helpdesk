@@ -6,5 +6,5 @@ return [
     'author' => 'Faveo',
     'website' => 'https://www.faveohelpdesk.com',
     'version' => '1.0.0',
-    'settings' => '#',
+    'settings' => 'active-directory-auth/settings',
 ];

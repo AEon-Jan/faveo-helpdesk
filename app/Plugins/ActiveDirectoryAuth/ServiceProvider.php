@@ -10,6 +10,8 @@ class ServiceProvider extends BaseServiceProvider
     {
         parent::register('ActiveDirectoryAuth');
 
+        $this->loadViewsFrom(app_path('Plugins/ActiveDirectoryAuth/views'), 'active-directory-auth');
+
         $this->mergeConfigFrom(
             app_path('Plugins/ActiveDirectoryAuth/Config/config.php'),
             'active_directory_auth'

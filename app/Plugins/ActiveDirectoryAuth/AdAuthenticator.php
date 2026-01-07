@@ -8,20 +8,23 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Plugins\ActiveDirectoryAuth\SettingsRepository;
 
 class AdAuthenticator
 {
     private ?Adldap $adldap;
+    private SettingsRepository $settings;
 
-    public function __construct(?Adldap $adldap = null)
+    public function __construct(?Adldap $adldap = null, ?SettingsRepository $settings = null)
     {
         $this->adldap = $adldap;
+        $this->settings = $settings ?? new SettingsRepository();
     }
 
     public function isEnabled(): bool
     {
         return $this->adldap instanceof Adldap
-            && filter_var(config('active_directory_auth.enabled', false), FILTER_VALIDATE_BOOLEAN);
+            && filter_var($this->settings->get('enabled', false), FILTER_VALIDATE_BOOLEAN);
     }
 
     public function attempt(string $login, string $password): ?User
@@ -35,8 +38,11 @@ class AdAuthenticator
             return null;
         }
 
-        $loginAttribute = config('active_directory_auth.login_attribute', 'sAMAccountName');
-        $baseFilter = config('active_directory_auth.user_filter', '(objectClass=user)');
+        $loginAttribute = $this->settings->get('login_attribute', 'sAMAccountName');
+        $baseFilter = $this->settings->get('user_filter', '(objectClass=user)');
+        if (trim((string) $baseFilter) === '') {
+            $baseFilter = '(objectClass=user)';
+        }
         $filter = sprintf(
             '(&%s(%s=%s)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))',
             $baseFilter,
@@ -85,16 +91,49 @@ class AdAuthenticator
         }
     }
 
+    public function connect()
+    {
+        if (!$this->adldap instanceof Adldap) {
+            return null;
+        }
+
+        $config = $this->buildConfig();
+        if (!$config) {
+            return null;
+        }
+
+        $this->adldap->addProvider($config);
+
+        return $this->adldap->connect();
+    }
+
+    public function settings(): array
+    {
+        return $this->settings->all();
+    }
+
+    public function syncAdUser($adUser): ?User
+    {
+        $loginAttribute = $this->settings->get('login_attribute', 'sAMAccountName');
+        $login = $this->getAttributeValue($adUser, $loginAttribute) ?: '';
+
+        if ($login === '') {
+            return null;
+        }
+
+        return $this->resolveLocalUser($adUser, $login);
+    }
+
     private function buildConfig(): ?array
     {
-        $host = config('active_directory_auth.host');
-        $baseDn = config('active_directory_auth.base_dn');
-        $bindDn = config('active_directory_auth.bind_dn');
-        $bindPassword = config('active_directory_auth.bind_password');
-        $port = (int) config('active_directory_auth.port', 389);
-        $encryption = strtolower((string) config('active_directory_auth.encryption', ''));
-        $tlsVerify = filter_var(config('active_directory_auth.tls_verify', true), FILTER_VALIDATE_BOOLEAN);
-        $caCert = config('active_directory_auth.ca_cert');
+        $host = $this->settings->get('host');
+        $baseDn = $this->settings->get('base_dn');
+        $bindDn = $this->settings->get('bind_dn');
+        $bindPassword = $this->settings->get('bind_password');
+        $port = (int) $this->settings->get('port', 389);
+        $encryption = strtolower((string) $this->settings->get('encryption', ''));
+        $tlsVerify = filter_var($this->settings->get('tls_verify', true), FILTER_VALIDATE_BOOLEAN);
+        $caCert = $this->settings->get('ca_cert');
 
         if (!$host || !$baseDn || !$bindDn || $bindPassword === null) {
             return null;
@@ -123,8 +162,8 @@ class AdAuthenticator
 
     private function resolveLocalUser($adUser, string $login): ?User
     {
-        $mapping = config('active_directory_auth.map', []);
-        $loginAttribute = config('active_directory_auth.login_attribute', 'sAMAccountName');
+        $mapping = $this->settings->get('map', []);
+        $loginAttribute = $this->settings->get('login_attribute', 'sAMAccountName');
         $userNameAttr = $mapping['user_name'] ?? $loginAttribute;
         $emailAttr = $mapping['email'] ?? 'mail';
         $firstNameAttr = $mapping['first_name'] ?? 'givenName';
@@ -158,7 +197,7 @@ class AdAuthenticator
 
     private function resolveLookup(string $userName, ?string $email): array
     {
-        $matchField = config('active_directory_auth.match_field', 'email');
+        $matchField = $this->settings->get('match_field', 'email');
         if ($matchField === 'user_name') {
             if ($userName) {
                 return ['user_name', $userName];
@@ -182,7 +221,7 @@ class AdAuthenticator
         $user->first_name = $firstName;
         $user->last_name = $lastName;
         $user->password = Hash::make(Str::random(32));
-        $user->role = config('active_directory_auth.default_role', 'user');
+        $user->role = $this->settings->get('default_role', 'user');
         $user->active = 1;
         $user->ban = 0;
         $user->phone_number = '';
@@ -205,12 +244,12 @@ class AdAuthenticator
 
     private function shouldSync(): bool
     {
-        return filter_var(config('active_directory_auth.sync_attributes', false), FILTER_VALIDATE_BOOLEAN);
+        return filter_var($this->settings->get('sync_attributes', false), FILTER_VALIDATE_BOOLEAN);
     }
 
     private function autoProvision(): bool
     {
-        return filter_var(config('active_directory_auth.auto_provision', false), FILTER_VALIDATE_BOOLEAN);
+        return filter_var($this->settings->get('auto_provision', false), FILTER_VALIDATE_BOOLEAN);
     }
 
     private function getAttributeValue($adUser, string $attribute): ?string

@@ -3,6 +3,7 @@
 namespace App\Plugins\ActiveDirectoryAuth;
 
 use App\Plugins\ServiceProvider as BaseServiceProvider;
+use App\Plugins\ActiveDirectoryAuth\SettingsRepository;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -17,12 +18,19 @@ class ServiceProvider extends BaseServiceProvider
             'active_directory_auth'
         );
 
+        $this->app->singleton(SettingsRepository::class, function () {
+            return new SettingsRepository();
+        });
+
         $this->app->singleton(AdAuthenticator::class, function ($app) {
             if (class_exists(\Adldap\Adldap::class)) {
-                return new AdAuthenticator($app->make(\Adldap\Adldap::class));
+                return new AdAuthenticator(
+                    $app->make(\Adldap\Adldap::class),
+                    $app->make(SettingsRepository::class)
+                );
             }
 
-            return new AdAuthenticator();
+            return new AdAuthenticator(null, $app->make(SettingsRepository::class));
         });
     }
 }

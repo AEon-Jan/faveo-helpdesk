@@ -27,7 +27,7 @@ class AdTest extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(Adldap $adldap)
     {
         $host = env('AD_HOST');
         $baseDn = env('AD_BASE_DN');
@@ -75,7 +75,6 @@ class AdTest extends Command
         );
 
         try {
-            $adldap = new Adldap();
             $adldap->addProvider($config);
             $provider = $adldap->connect();
 

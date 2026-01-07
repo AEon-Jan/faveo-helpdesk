@@ -18,7 +18,11 @@ class ServiceProvider extends BaseServiceProvider
         );
 
         $this->app->singleton(AdAuthenticator::class, function ($app) {
-            return new AdAuthenticator($app->make(\Adldap\Adldap::class));
+            if (class_exists(\Adldap\Adldap::class)) {
+                return new AdAuthenticator($app->make(\Adldap\Adldap::class));
+            }
+
+            return new AdAuthenticator();
         });
     }
 }

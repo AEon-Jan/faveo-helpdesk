@@ -10,16 +10,17 @@ use Illuminate\Support\Str;
 
 class AdAuthenticator
 {
-    private Adldap $adldap;
+    private ?Adldap $adldap;
 
-    public function __construct(Adldap $adldap)
+    public function __construct(?Adldap $adldap = null)
     {
         $this->adldap = $adldap;
     }
 
     public function isEnabled(): bool
     {
-        return filter_var(config('active_directory_auth.enabled', false), FILTER_VALIDATE_BOOLEAN);
+        return $this->adldap instanceof Adldap
+            && filter_var(config('active_directory_auth.enabled', false), FILTER_VALIDATE_BOOLEAN);
     }
 
     public function attempt(string $login, string $password): ?User

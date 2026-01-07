@@ -24,6 +24,7 @@ use DateTime;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Lang;
 use Socialite;
@@ -325,7 +326,14 @@ class AuthController extends Controller
 
             $adAuthenticator = null;
             if (class_exists(AdAuthenticator::class)) {
-                $adAuthenticator = app(AdAuthenticator::class);
+                try {
+                    $adAuthenticator = app(AdAuthenticator::class);
+                } catch (\Throwable $exception) {
+                    Log::warning('Active Directory authenticator failed to initialize.', [
+                        'message' => $exception->getMessage(),
+                        'exception' => $exception,
+                    ]);
+                }
             }
 
             if ($adAuthenticator && $adAuthenticator->isEnabled()) {

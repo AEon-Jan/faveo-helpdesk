@@ -6,6 +6,7 @@ use Adldap\Adldap;
 use Adldap\Exceptions\AdldapException;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AdAuthenticator
@@ -56,10 +57,32 @@ class AdAuthenticator
                 return null;
             }
         } catch (AdldapException $exception) {
+            Log::warning('Active Directory authentication failed.', [
+                'login' => $login,
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]);
+            return null;
+        } catch (\Throwable $exception) {
+            Log::error('Unexpected Active Directory authentication error.', [
+                'login' => $login,
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]);
             return null;
         }
 
-        return $this->resolveLocalUser($adUser, $login);
+        try {
+            return $this->resolveLocalUser($adUser, $login);
+        } catch (\Throwable $exception) {
+            Log::error('Active Directory user resolution failed.', [
+                'login' => $login,
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]);
+
+            return null;
+        }
     }
 
     private function buildConfig(): ?array

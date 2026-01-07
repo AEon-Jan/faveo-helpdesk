@@ -12,6 +12,7 @@ use App\Http\Requests\helpdesk\OtpVerifyRequest;
 use App\Http\Requests\helpdesk\RegisterRequest;
 use App\Model\helpdesk\Settings\CommonSettings;
 use App\Model\helpdesk\Settings\Plugin;
+use App\Plugins\ActiveDirectoryAuth\AdAuthenticator;
 use App\Model\helpdesk\Settings\Security;
 use App\Model\helpdesk\Ticket\Ticket_Thread;
 use App\Model\helpdesk\Ticket\Tickets;
@@ -320,6 +321,37 @@ class AuthController extends Controller
             $security = Security::whereId('1')->first();
             if ($result == 1) {
                 return redirect()->back()->withErrors('email', 'Incorrect details')->with(['error' => $security->lockout_message, 'referer' => $referer]);
+            }
+
+            $adAuthenticator = null;
+            if (class_exists(AdAuthenticator::class)) {
+                $adAuthenticator = app(AdAuthenticator::class);
+            }
+
+            if ($adAuthenticator && $adAuthenticator->isEnabled()) {
+                $adUser = $adAuthenticator->attempt($usernameinput, $password);
+                if ($adUser) {
+                    if (!$adUser->active) {
+                        return redirect()->back()
+                                        ->withInput($request->only('email', 'remember'))
+                                        ->withErrors([
+                                            'email'       => $this->getFailedLoginMessage(),
+                                            'password'    => $this->getFailedLoginMessage(),
+                                        ])->with(['error' => Lang::get('lang.this_account_is_currently_inactive'),
+                                            'referer'     => $referer, ]);
+                    }
+
+                    Auth::login($adUser, $request->has('remember'));
+                    if (Auth::user()->role == 'user') {
+                        if ($request->input('referer')) {
+                            return \Redirect::route($request->input('referer'));
+                        }
+
+                        return redirect()->intended($this->redirectPath());
+                    }
+
+                    return redirect()->intended($this->redirectPath());
+                }
             }
 
             $check_active = User::where('email', '=', $request->input('email'))->orwhere('user_name', '=', $request->input('email'))->first();

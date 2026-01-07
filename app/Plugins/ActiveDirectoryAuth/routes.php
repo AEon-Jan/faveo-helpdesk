@@ -6,4 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['web', 'install', 'roles', 'auth', 'update'])->group(function () {
     Route::get('active-directory-auth/settings', [SettingsController::class, 'index'])
         ->name('active-directory-auth.settings');
+    Route::post('active-directory-auth/settings', [SettingsController::class, 'update'])
+        ->name('active-directory-auth.settings.update');
+    Route::post('active-directory-auth/import', [SettingsController::class, 'import'])
+        ->name('active-directory-auth.import');
 });

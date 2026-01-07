@@ -39,7 +39,7 @@ class AdTest extends Command
         $caCert = $settings['ca_cert'] ?? null;
 
         if (!$host || !$baseDn || !$bindDn || $bindPassword === null) {
-            $this->error('Missing AD configuration. Please set AD_HOST, AD_BASE_DN, AD_BIND_DN, and AD_BIND_PASSWORD.');
+            $this->error('Missing AD configuration. Please set Active Directory settings in the panel.');
 
             return 1;
         }

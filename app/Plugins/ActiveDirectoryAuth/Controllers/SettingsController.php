@@ -9,6 +9,7 @@ use App\Plugins\ActiveDirectoryAuth\SettingsRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use RuntimeException;
 
 class SettingsController extends Controller
 {
@@ -54,7 +55,13 @@ class SettingsController extends Controller
             unset($payload['bind_password']);
         }
 
-        $settingsRepository->save($payload);
+        try {
+            $settingsRepository->save($payload);
+        } catch (RuntimeException $exception) {
+            return redirect()
+                ->route('active-directory-auth.settings')
+                ->with('fails', $exception->getMessage());
+        }
 
         return redirect()
             ->route('active-directory-auth.settings')

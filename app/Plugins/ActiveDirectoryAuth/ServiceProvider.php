@@ -7,6 +7,11 @@ use App\Plugins\ActiveDirectoryAuth\SettingsRepository;
 
 class ServiceProvider extends BaseServiceProvider
 {
+    public function boot()
+    {
+        $this->loadMigrationsFrom(app_path('Plugins/ActiveDirectoryAuth/database/migrations'));
+    }
+
     public function register()
     {
         parent::register('ActiveDirectoryAuth');

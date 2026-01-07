@@ -5,6 +5,7 @@ namespace App\Plugins\ActiveDirectoryAuth;
 use App\Plugins\ActiveDirectoryAuth\Models\ActiveDirectorySetting;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
+use RuntimeException;
 
 class SettingsRepository
 {
@@ -70,6 +71,10 @@ class SettingsRepository
 
     public function save(array $attributes): ActiveDirectorySetting
     {
+        if (!Schema::hasTable('active_directory_settings')) {
+            throw new RuntimeException('Active Directory settings table not found. Run migrations first.');
+        }
+
         $settings = ActiveDirectorySetting::query()->first() ?? new ActiveDirectorySetting();
         $settings->fill($attributes);
         $settings->save();

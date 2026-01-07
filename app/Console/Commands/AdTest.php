@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Adldap\Adldap;
 use Adldap\Exceptions\AdldapException;
+use App\Plugins\ActiveDirectoryAuth\AdAuthenticator;
 use Illuminate\Console\Command;
 
 class AdTest extends Command
@@ -27,19 +27,19 @@ class AdTest extends Command
      *
      * @return int
      */
-    public function handle(Adldap $adldap)
+    public function handle(AdAuthenticator $authenticator)
     {
-        $host = env('AD_HOST');
-        $baseDn = env('AD_BASE_DN');
-        $bindDn = env('AD_BIND_DN');
-        $bindPassword = env('AD_BIND_PASSWORD');
-        $port = (int) env('AD_PORT', 389);
-        $encryption = strtolower((string) env('AD_ENCRYPTION', ''));
-        $tlsVerify = filter_var(env('AD_TLS_VERIFY', true), FILTER_VALIDATE_BOOLEAN);
-        $caCert = env('AD_CA_CERT');
+        $settings = $authenticator->settings();
+
+        $host = $settings['host'] ?? null;
+        $baseDn = $settings['base_dn'] ?? null;
+        $bindDn = $settings['bind_dn'] ?? null;
+        $bindPassword = $settings['bind_password'] ?? null;
+        $tlsVerify = filter_var($settings['tls_verify'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $caCert = $settings['ca_cert'] ?? null;
 
         if (!$host || !$baseDn || !$bindDn || $bindPassword === null) {
-            $this->error('Missing AD configuration. Please set AD_HOST, AD_BASE_DN, AD_BIND_DN, and AD_BIND_PASSWORD.');
+            $this->error('Missing AD configuration. Please set Active Directory settings in the panel.');
 
             return 1;
         }
@@ -52,21 +52,9 @@ class AdTest extends Command
             putenv('LDAPTLS_REQCERT=never');
         }
 
-        $config = [
-            'hosts' => [$host],
-            'base_dn' => $baseDn,
-            'username' => $bindDn,
-            'password' => $bindPassword,
-            'port' => $port,
-            'use_ssl' => $encryption === 'ldaps',
-            'use_tls' => $encryption === 'starttls',
-            'version' => 3,
-            'follow_referrals' => false,
-        ];
-
         $username = $this->argument('username');
-        $loginAttribute = env('AD_LOGIN_ATTR', 'sAMAccountName');
-        $baseFilter = env('AD_USER_FILTER', '(objectClass=user)');
+        $loginAttribute = $settings['login_attribute'] ?? 'sAMAccountName';
+        $baseFilter = $settings['user_filter'] ?? '(objectClass=user)';
         $filter = sprintf(
             '(&%s(%s=%s)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))',
             $baseFilter,
@@ -75,8 +63,12 @@ class AdTest extends Command
         );
 
         try {
-            $adldap->addProvider($config);
-            $provider = $adldap->connect();
+            $provider = $authenticator->connect();
+            if (!$provider) {
+                $this->error('Active Directory connection could not be established.');
+
+                return 1;
+            }
 
             $user = $provider->search()->rawFilter($filter)->first();
         } catch (AdldapException $exception) {

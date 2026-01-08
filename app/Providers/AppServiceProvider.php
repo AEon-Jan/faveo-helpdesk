@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         Route::singularResourceParameters(false);
         $this->composer();
         URL::forceScheme('https');
+        $this->loadMigrationsFrom(app_path('Plugins/ActiveDirectoryAuth/database/migrations'));
     }
 
     public function composer()

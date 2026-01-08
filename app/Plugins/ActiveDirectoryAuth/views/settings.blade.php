@@ -193,6 +193,11 @@
 
             <button type="submit" class="btn btn-primary">Save settings</button>
         </form>
+        <form method="post" action="{{ route('active-directory-auth.test-connection') }}" class="mt-2">
+            @csrf
+            <button type="submit" class="btn btn-outline-secondary">Test connection</button>
+            <small class="text-muted ml-2">Uses the currently saved settings.</small>
+        </form>
     </div>
 </div>
 

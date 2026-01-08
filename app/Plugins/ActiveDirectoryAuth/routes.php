@@ -8,6 +8,8 @@ Route::middleware(['web', 'install', 'roles', 'auth', 'update'])->group(function
         ->name('active-directory-auth.settings');
     Route::post('active-directory-auth/settings', [SettingsController::class, 'update'])
         ->name('active-directory-auth.settings.update');
+    Route::post('active-directory-auth/test-connection', [SettingsController::class, 'testConnection'])
+        ->name('active-directory-auth.test-connection');
     Route::post('active-directory-auth/import', [SettingsController::class, 'import'])
         ->name('active-directory-auth.import');
 });

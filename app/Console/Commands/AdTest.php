@@ -64,13 +64,11 @@ class AdTest extends Command
 
         try {
             $provider = $authenticator->connect();
-            if (!$provider) {
-                $this->error('Active Directory connection could not be established.');
-
-                return 1;
-            }
-
             $user = $provider->search()->rawFilter($filter)->first();
+        } catch (\RuntimeException $exception) {
+            $this->error($exception->getMessage());
+
+            return 1;
         } catch (AdldapException $exception) {
             $this->error('AD connection or search failed: '.$exception->getMessage());
 

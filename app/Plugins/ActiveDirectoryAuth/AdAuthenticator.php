@@ -93,13 +93,17 @@ class AdAuthenticator
 
     public function connect()
     {
+        if (!filter_var($this->settings->get('enabled', false), FILTER_VALIDATE_BOOLEAN)) {
+            throw new \RuntimeException('Active Directory authentication is disabled in the ActiveDirectoryAuth settings.');
+        }
+
         if (!$this->adldap instanceof Adldap) {
-            return null;
+            throw new \RuntimeException('Active Directory client is unavailable. Ensure the ActiveDirectoryAuth plugin is installed and its dependencies are available.');
         }
 
         $config = $this->buildConfig();
         if (!$config) {
-            return null;
+            throw new \RuntimeException('Active Directory configuration is incomplete. Ensure host, base DN, bind DN, and bind password are set.');
         }
 
         $this->adldap->addProvider($config);

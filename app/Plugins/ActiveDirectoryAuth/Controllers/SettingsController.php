@@ -74,11 +74,6 @@ class SettingsController extends Controller
 
         try {
             $provider = $authenticator->connect();
-            if (!$provider) {
-                return redirect()
-                    ->route('active-directory-auth.settings')
-                    ->with('fails', 'Active Directory connection could not be established.');
-            }
 
             $settings = $authenticator->settings();
             $baseFilter = $settings['user_filter'] ?? '(objectClass=user)';
@@ -103,6 +98,10 @@ class SettingsController extends Controller
             return redirect()
                 ->route('active-directory-auth.settings')
                 ->with('success', "Imported {$synced} Active Directory users.");
+        } catch (RuntimeException $exception) {
+            return redirect()
+                ->route('active-directory-auth.settings')
+                ->with('fails', $exception->getMessage());
         } catch (AdldapException $exception) {
             return redirect()
                 ->route('active-directory-auth.settings')
@@ -116,6 +115,34 @@ class SettingsController extends Controller
             return redirect()
                 ->route('active-directory-auth.settings')
                 ->with('fails', 'AD import failed. Check logs for details.');
+        }
+    }
+
+    public function testConnection(AdAuthenticator $authenticator)
+    {
+        try {
+            $authenticator->connect();
+
+            return redirect()
+                ->route('active-directory-auth.settings')
+                ->with('success', 'Active Directory connection succeeded.');
+        } catch (RuntimeException $exception) {
+            return redirect()
+                ->route('active-directory-auth.settings')
+                ->with('fails', $exception->getMessage());
+        } catch (AdldapException $exception) {
+            return redirect()
+                ->route('active-directory-auth.settings')
+                ->with('fails', 'Active Directory connection failed: '.$exception->getMessage());
+        } catch (\Throwable $exception) {
+            Log::error('Active Directory connection test failed.', [
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]);
+
+            return redirect()
+                ->route('active-directory-auth.settings')
+                ->with('fails', 'Active Directory connection failed. Check logs for details.');
         }
     }
 }

@@ -94,7 +94,7 @@ class AdAuthenticator
     public function connect()
     {
         if (!$this->adldap instanceof Adldap) {
-            throw new \RuntimeException('Active Directory client is unavailable. Ensure adldap2/adldap2 is installed and autoloaded.');
+            throw new \RuntimeException('Active Directory client is unavailable. Ensure the Active Directory plugin is installed and enabled.');
         }
 
         $config = $this->buildConfig();

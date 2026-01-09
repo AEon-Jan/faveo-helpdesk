@@ -5,7 +5,7 @@
     <title>SUPPORT CENTER</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     
-    <link rel="shortcut icon" href="{{asset("lb-faveo/media/images/favicon.ico")}}">
+    <link rel="shortcut icon" href="{{asset("lb-faveo/css/crazy-favicon.svg")}}">
     
     <link href="{{asset("lb-faveo/css/bootstrap4.min.css")}}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome Icons -->
@@ -14,9 +14,11 @@
     <link href="{{asset("lb-faveo/css/client.min.css")}}" rel="stylesheet" type="text/css" />
 
     <link href="{{asset("lb-faveo/css/widgetbox.min.css")}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset("lb-faveo/css/crazy-theme.css")}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap">
     
   </head>
-  <body>
+  <body class="crazy-theme">
 
      <style type="text/css">
       

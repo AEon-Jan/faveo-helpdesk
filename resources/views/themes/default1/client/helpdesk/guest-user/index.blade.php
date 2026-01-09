@@ -37,27 +37,6 @@
     @endif
 
 <div id="content" class="site-content col-md-12">
-    <section class="cs-hero cs-hero--parallax" data-parallax-speed="0.35" role="region" aria-label="Crazy Systems Support Center">
-        <div class="cs-hero__content">
-            <div class="cs-hero__badge">
-                <i class="fas fa-headset"></i>
-                <span>Crazy-Systems Support</span>
-            </div>
-            <div class="cs-hero__eyebrow">Tech & Esports Service</div>
-            <h1 class="cs-hero__title">{!! Lang::get('lang.welcome') !!} – {!! Lang::get('lang.submit_a_ticket') !!}</h1>
-            <p class="cs-hero__subtitle">
-                Erlebe schnellen, professionellen Support im Crazy-Systems Look. Überblicke Tickets, Knowledge Base und Updates in einem Dark-Portal.
-            </p>
-            <div class="cs-hero__actions">
-                <a href="{!! URL::route('form') !!}" class="btn btn-primary" aria-label="{!! Lang::get('lang.submit_a_ticket') !!}">
-                    {!! Lang::get('lang.submit_a_ticket') !!}
-                </a>
-                <a href="{{url('/knowledgebase')}}" class="btn btn-outline-primary" aria-label="{!! Lang::get('lang.knowledge_base') !!}">
-                    {!! Lang::get('lang.knowledge_base') !!}
-                </a>
-            </div>
-        </div>
-    </section>
     <div id="corewidgetbox" class="wid">
         <div id="wbox" class="widgetrow text-center">
         @if(Auth::user())

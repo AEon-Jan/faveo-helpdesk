@@ -16,6 +16,8 @@
         <link href="{{asset("lb-faveo/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css")}}" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{{asset("lb-faveo/dist/css/app.css")}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset("lb-faveo/css/crazy-theme.css")}}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap">
         <link href="{{asset("lb-faveo/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css")}}" rel="stylesheet" type="text/css" />
         {{-- // <script src="ckeditor/ckeditor.js"></script> --}}
         <!--[if lt IE 9]>
@@ -24,7 +26,7 @@
         <![endif]-->
         @yield('HeadInclude')
     </head>
-    <body>
+    <body class="crazy-theme">
 	<div id="page" class="hfeed site">
             <header id="masthead" class="site-header" role="banner">
                 <div class="container">

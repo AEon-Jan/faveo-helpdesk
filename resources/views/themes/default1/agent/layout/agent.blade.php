@@ -12,7 +12,7 @@
         <meta name="_token" content="{!! csrf_token() !!}"/>
     
         <!-- faveo favicon -->
-        <link href="{{asset("lb-faveo/media/images/favicon.ico")}}" rel="shortcut icon">
+        <link href="{{asset("lb-faveo/css/crazy-favicon.svg")}}" rel="shortcut icon">
     
        <!-- Bootstrap 4.3.1 -->
         <link href="{{asset("lb-faveo/css/bootstrap4.min.css")}}" rel="stylesheet" type="text/css" />
@@ -46,6 +46,8 @@
         <link href="{{asset("lb-faveo/plugins/summernote/summernote-bs5.min.css")}}" rel="stylesheet" type="text/css" />
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap">
+        <link href="{{asset("lb-faveo/css/crazy-theme.css")}}" rel="stylesheet" type="text/css" />
 
         <link href="{{asset("lb-faveo/css/jquery.ui.css")}}" rel="stylesheet" type="text/css" />
         <script src="{{asset("lb-faveo/js/jquery-3.6.3.min.js")}}" type="text/javascript"></script>
@@ -100,7 +102,7 @@
         </style>
     </head>
     
-    <body class="skin-yellow sidebar-mini layout-fixed layout-navbar-fixed text-sm">
+    <body class="skin-yellow sidebar-mini layout-fixed layout-navbar-fixed text-sm crazy-theme">
         
         <div class="wrapper">
 

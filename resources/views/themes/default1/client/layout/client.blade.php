@@ -12,7 +12,7 @@
         ?>
         <title> @yield('title') {!! strip_tags($title_name) !!} </title>
         <!-- faveo favicon -->
-        <link href="{{asset("lb-faveo/media/images/favicon.ico")}}"  rel="shortcut icon" >
+        <link href="{{asset("lb-faveo/css/crazy-favicon.svg")}}"  rel="shortcut icon" >
 
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 
@@ -32,11 +32,14 @@
 
         <link href="{{asset("lb-faveo/css/edit.css")}}" rel="stylesheet" type="text/css">
 
+        <link href="{{asset("lb-faveo/css/crazy-theme.css")}}" rel="stylesheet" type="text/css">
+
         <link href="{{asset("lb-faveo/css/jquery.rating.css")}}" rel="stylesheet" type="text/css" />
 
         <link href="{{asset("lb-faveo/plugins/summernote/summernote-lite.min.css")}}" rel="stylesheet" type="text/css" />
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap">
 
        <script src="{{asset("lb-faveo/js/jquery-3.6.3.min.js")}}" type="text/javascript"></script>
 
@@ -52,7 +55,7 @@
             }
         </style>
     </head>
-    <body>
+    <body class="crazy-theme">
 
         <style>
 
@@ -569,6 +572,7 @@
           <script src="{{asset("lb-faveo/js/respond.min.js")}}" type="text/javascript"></script>
 
             <script src="{{asset("lb-faveo/plugins/summernote/summernote-lite.min.js")}}" type="text/javascript"></script>
+            <script src="{{asset("lb-faveo/js/crazy-parallax.js")}}" type="text/javascript"></script>
 
             <script>
 $(function () {

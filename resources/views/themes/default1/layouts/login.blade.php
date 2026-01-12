@@ -14,9 +14,12 @@
     <link href="{{asset("lb-faveo/css/client.min.css")}}" rel="stylesheet" type="text/css" />
 
     <link href="{{asset("lb-faveo/css/widgetbox.min.css")}}" rel="stylesheet" type="text/css" />
+
+    <link href="{{asset("lb-faveo/css/corporate-theme.css")}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     
   </head>
-  <body>
+  <body class="corp-theme">
 
      <style type="text/css">
       

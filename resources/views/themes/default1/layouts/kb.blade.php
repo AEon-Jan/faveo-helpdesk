@@ -27,6 +27,8 @@
         {{-- jquery ui css --}}
         <link type="text/css" href="{{asset("downloads/jquery.ui.css")}}" rel="stylesheet">
         <link href="{{asset("lb-faveo/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css")}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset("lb-faveo/css/corporate-theme.css")}}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
         <!-- <link type="text/css" href="http://code.jquery.com/ui/1.9.1/themes/redmond/jquery-ui.css" rel="stylesheet"> -->
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -35,7 +37,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         @yield('HeadInclude')
     </head>
-    <body class="skin-black fixed">
+    <body class="skin-black fixed corp-theme">
         <div class="wrapper">
             <header class="main-header">
                 <a href="" class="logo"><b>Faveo </b>HELPDESK</a>

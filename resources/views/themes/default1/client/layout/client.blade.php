@@ -36,6 +36,10 @@
 
         <link href="{{asset("lb-faveo/plugins/summernote/summernote-lite.min.css")}}" rel="stylesheet" type="text/css" />
 
+        <link href="{{asset("lb-faveo/css/corporate-theme.css")}}" rel="stylesheet" type="text/css" />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
        <script src="{{asset("lb-faveo/js/jquery-3.6.3.min.js")}}" type="text/javascript"></script>
@@ -52,7 +56,7 @@
             }
         </style>
     </head>
-    <body>
+    <body class="corp-theme">
 
         <style>
 
@@ -96,7 +100,7 @@
 
               .nav-item .dropdown-menu{right: unset !important; left: unset!important;;margin-left: -6px;}
 
-              .btn-primary { background-color:#009aba !important;border-color:#00c0ef !important; }
+              .btn-primary { background: linear-gradient(135deg, var(--corp-accent), var(--corp-accent-strong)) !important; border-color: transparent !important; }
 
             .breadcrumb-item+.breadcrumb-item::before {color: #ffffff !important;}
         </style>
